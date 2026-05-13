@@ -1,0 +1,6 @@
+{
+  "name": "Lunas De Café - Repertorio",
+  "description": "Repertorio interactivo de canciones con pedidos a través de WhatsApp, escaneado desde códigos QR en las mesas.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
