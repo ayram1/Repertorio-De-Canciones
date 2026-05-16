@@ -7,7 +7,7 @@ import SuggestSong from './components/SuggestSong';
 import Tutorial from './components/Tutorial';
 
 // Fragmento de código (flag) para activar/desactivar la función de pedir canción
-const ENABLE_SONG_REQUESTS = true;
+const ENABLE_SONG_REQUESTS = false;
 const JSON_URL = 'https://raw.githubusercontent.com/ayram1/ayram1.github.io/main/repertorio.json';
 
 export default function App() {
