@@ -13,7 +13,7 @@ export const buildWhatsAppLink = (song: string, artist: string, tableNumber: str
   } else {
     message += `Mesa [No especificada (escanear QR)]\n`;
   }
-  message += `Canción: ${song}\nDe: ${artist}`;
+  message += `Canción: *${song}*\nDe: _${artist}_`;
   
   return `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(message)}`;
 };
