@@ -16,6 +16,7 @@ function doGet(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet();
   var requestsSheet = getOrCreateSheet(sheet, "Requests");
   var suspendedSheet = getOrCreateSheet(sheet, "SuspendedTables");
+  var settingsSheet = getOrCreateSheet(sheet, "Settings");
 
   var requestsData = getSheetData(requestsSheet);
   var suspendedData = getSheetData(suspendedSheet);
@@ -34,6 +35,16 @@ function doGet(e) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+function getPassword(sheet) {
+  var settingsSheet = getOrCreateSheet(sheet, "Settings");
+  var val = settingsSheet.getRange("A1").getValue();
+  if(!val) {
+     settingsSheet.getRange("A1").setValue("admin123");
+     return "admin123";
+  }
+  return val;
+}
+
 function doPost(e) {
   var result = { success: false };
   try {
@@ -41,7 +52,19 @@ function doPost(e) {
     var cmd = data.cmd;
     var sheet = SpreadsheetApp.getActiveSpreadsheet();
     
-    if (cmd === 'add_request') {
+    if (cmd === 'verify_password') {
+       result = { success: true, valid: String(data.password) === String(getPassword(sheet)) };
+    }
+    else if (cmd === 'update_password') {
+       if (String(data.oldPassword) === String(getPassword(sheet))) {
+           var settingsSheet = getOrCreateSheet(sheet, "Settings");
+           settingsSheet.getRange("A1").setValue(data.newPassword);
+           result = { success: true };
+       } else {
+           result = { success: false, error: 'invalid_password' };
+       }
+    }
+    else if (cmd === 'add_request') {
       var suspendedSheet = getOrCreateSheet(sheet, "SuspendedTables");
       var suspendedData = getSheetData(suspendedSheet);
       // Check if suspended
@@ -84,6 +107,25 @@ function doPost(e) {
             }
         }
     }
+    else if (cmd === 'clear_table') {
+       var requestsSheet = getOrCreateSheet(sheet, "Requests");
+       var dataRange = requestsSheet.getDataRange();
+       var values = dataRange.getValues();
+       var mesaIndex = values[0].indexOf("mesa");
+       var playedIndex = values[0].indexOf("played");
+       
+       // Marcar todas las canciones pendientes de la mesa como cantadas
+       for (var i = 1; i < values.length; i++) {
+           if (values[i][mesaIndex] == data.mesa && values[i][playedIndex] !== true) {
+               requestsSheet.getRange(i + 1, playedIndex + 1).setValue(true);
+           }
+       }
+       result = { success: true };
+    }
+    else if (cmd === 'clear_all_data') {
+       autoClearData();
+       result = { success: true };
+    }
     else if (cmd === 'toggle_suspend') {
         var suspendedSheet = getOrCreateSheet(sheet, "SuspendedTables");
         var dataRange = suspendedSheet.getDataRange();
@@ -114,6 +156,25 @@ function doPost(e) {
   
   return ContentService.createTextOutput(JSON.stringify(result))
     .setMimeType(ContentService.MimeType.JSON);
+}
+
+function autoClearData() {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet();
+  var requestsSheet = sheet.getSheetByName("Requests");
+  var suspendedSheet = sheet.getSheetByName("SuspendedTables");
+  
+  if (requestsSheet) {
+      var lr = requestsSheet.getLastRow();
+      if(lr > 1) {
+          requestsSheet.getRange(2, 1, lr - 1, requestsSheet.getLastColumn()).clearContent();
+      }
+  }
+  if (suspendedSheet) {
+      var lr = suspendedSheet.getLastRow();
+      if(lr > 1) {
+         suspendedSheet.getRange(2, 1, lr - 1, suspendedSheet.getLastColumn()).clearContent();
+      }
+  }
 }
 
 function getOrCreateSheet(spreadsheet, name) {
@@ -155,6 +216,16 @@ function generateId() {
   return Math.random().toString(36).substr(2, 9) + new Date().getTime().toString(36);
 }
 ```
+
+## Paso 2.5: Activar el borrado automático (6:00 am)
+1. En el menú izquierdo de Apps Script, haz clic en el ícono de **Reloj** (Activadores o Triggers).
+2. Haz clic en **Añadir activador** (botón abajo a la derecha).
+3. Configura lo siguiente:
+   - "Elige la función que se debe ejecutar": `autoClearData`
+   - "Selecciona el origen del evento": `Según el tiempo` (Time-driven)
+   - "Seleccione el tipo de activador": `Temporizador por días` (Day timer)
+   - "Seleccione la hora": `5 a.m. a 6 a.m.` (o la de tu preferencia).
+4. Guardar.
 
 ## Paso 3: Desplegar el Script (Importante)
 1. Haz clic en el botón azul **"Implementar"** (Deploy) en la parte superior derecha.

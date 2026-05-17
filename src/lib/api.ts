@@ -1,4 +1,4 @@
-export const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz74hF0rfjB3VfZzGalVyKYkzp-e6aymAbRIuxvp19mOt58_Ak6-TWDx9JgKJl5SxBnig/exec'; // <-- IMPORTANTE: Pega aquí la URL de tu Web App
+export const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-jcBSon_XbjOSwQe6iW0S7n6elg-wWHiflQagLh0CepORT29TuPQ9rO_48SB2OO_Y5g/exec'; // <-- IMPORTANTE: Pega aquí la URL de tu Web App
 
 export interface SongRequest {
   id: string;
@@ -15,7 +15,7 @@ export interface SheetsResponse {
 }
 
 export const fetchDashboardData = async (): Promise<SheetsResponse> => {
-  if (GOOGLE_SCRIPT_URL === 'Pega aquí la URL de tu Web App') {
+  if (GOOGLE_SCRIPT_URL === 'PEGA_TU_URL_AQUI') {
     return { requests: [], suspendedTables: [] }; // Mock if empty
   }
   
@@ -25,7 +25,7 @@ export const fetchDashboardData = async (): Promise<SheetsResponse> => {
 };
 
 export const addSongRequest = async (mesa: string, cancion: string, artista: string) => {
-  if (GOOGLE_SCRIPT_URL === 'Pega aquí la URL de tu Web App') {
+  if (GOOGLE_SCRIPT_URL === 'PEGA_TU_URL_AQUI') {
     throw new Error("URL de Google Sheets no configurada");
   }
 
@@ -66,4 +66,50 @@ export const toggleSuspendTable = async (mesa: string | number) => {
   const data = await response.json();
   if (!data.success) throw new Error("Error al modificar estado de la mesa");
   return data.suspended; // true o false
+};
+
+export const clearTable = async (mesa: string | number) => {
+  const response = await fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ cmd: 'clear_table', mesa })
+  });
+  const data = await response.json();
+  if (!data.success) throw new Error("Error al limpiar la mesa");
+  return data;
+};
+
+export const clearAllData = async () => {
+  const response = await fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ cmd: 'clear_all_data' })
+  });
+  const data = await response.json();
+  if (!data.success) throw new Error("Error al borrar datos");
+  return data;
+};
+
+export const verifyPassword = async (password: string) => {
+  const response = await fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ cmd: 'verify_password', password })
+  });
+  const data = await response.json();
+  return data.valid;
+};
+
+export const updatePassword = async (oldPassword: string, newPassword: string) => {
+  const response = await fetch(GOOGLE_SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ cmd: 'update_password', oldPassword, newPassword })
+  });
+  const data = await response.json();
+  if (!data.success) {
+    if (data.error === 'invalid_password') throw new Error('Contraseña actual incorrecta');
+    throw new Error('Error al actualizar contraseña');
+  }
+  return data;
 };
