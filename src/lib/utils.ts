@@ -1,4 +1,4 @@
-export const WA_PHONE = "573207533134"; // Reemplazar con el número del local
+export const WA_PHONE = "5215555555555"; // Reemplazar con el número del local
 
 export const getTableNumber = (): string | null => {
   if (typeof window === 'undefined') return null;
@@ -13,7 +13,7 @@ export const buildWhatsAppLink = (song: string, artist: string, tableNumber: str
   } else {
     message += `Mesa [No especificada (escanear QR)]\n`;
   }
-  message += `Canción: *${song}*\nDe: _${artist}_`;
+  message += `Canción: ${song}\nDe: ${artist}`;
   
   return `https://wa.me/${WA_PHONE}?text=${encodeURIComponent(message)}`;
 };
