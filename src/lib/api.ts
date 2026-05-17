@@ -15,7 +15,7 @@ export interface SheetsResponse {
 }
 
 export const fetchDashboardData = async (): Promise<SheetsResponse> => {
-  if (GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz74hF0rfjB3VfZzGalVyKYkzp-e6aymAbRIuxvp19mOt58_Ak6-TWDx9JgKJl5SxBnig/exec') {
+  if (GOOGLE_SCRIPT_URL === 'Pega aquí la URL de tu Web App') {
     return { requests: [], suspendedTables: [] }; // Mock if empty
   }
   
@@ -25,7 +25,7 @@ export const fetchDashboardData = async (): Promise<SheetsResponse> => {
 };
 
 export const addSongRequest = async (mesa: string, cancion: string, artista: string) => {
-  if (GOOGLE_SCRIPT_URL === 'https://script.google.com/macros/s/AKfycbz74hF0rfjB3VfZzGalVyKYkzp-e6aymAbRIuxvp19mOt58_Ak6-TWDx9JgKJl5SxBnig/exec') {
+  if (GOOGLE_SCRIPT_URL === 'Pega aquí la URL de tu Web App') {
     throw new Error("URL de Google Sheets no configurada");
   }
 
