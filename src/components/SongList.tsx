@@ -50,13 +50,17 @@ export default function SongList({ data, searchTerm, tableNumber, enableRequests
           </h2>
           <div className="flex flex-col">
             {artistData.canciones.map((song, songIndex) => (
-              <SongItem 
+              <div 
                 key={`${artistData.artista}-${songIndex}`}
-                song={song}
-                artist={artistData.artista}
-                tableNumber={tableNumber}
-                enableRequests={enableRequests}
-              />
+                id={index === 0 && songIndex === 0 ? 'song-list-tour' : undefined}
+              >
+                <SongItem 
+                  song={song}
+                  artist={artistData.artista}
+                  tableNumber={tableNumber}
+                  enableRequests={enableRequests}
+                />
+              </div>
             ))}
           </div>
         </div>

@@ -70,7 +70,7 @@ export default function ClientView() {
             )}
           </div>
 
-          <div className="relative">
+          <div className="relative" id="search-tour">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-5 w-5 text-neutral-500" />
             </div>

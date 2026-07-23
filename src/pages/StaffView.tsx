@@ -24,6 +24,7 @@ export default function StaffView() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastFetchTime, setLastFetchTime] = useState<Date>(new Date());
+  const [showGlow, setShowGlow] = useState(false);
   
   const knownIdsRef = useRef<Set<string>>(new Set());
 
@@ -75,6 +76,7 @@ export default function StaffView() {
             icon: '🎵',
             description: 'Se ha agregado una canción a la lista.'
           });
+          setShowGlow(true);
         }
       }
 
@@ -240,6 +242,20 @@ export default function StaffView() {
     <div className="min-h-screen bg-black text-white selection:bg-red-500/30 selection:text-white">
       <Toaster theme="dark" position="top-right" richColors />
       
+      {/* Glowing Notification Overlay */}
+      {showGlow && (
+        <div className="fixed inset-0 z-[100] pointer-events-none flex items-start justify-center pt-24" style={{ boxShadow: 'inset 0 0 150px rgba(239, 68, 68, 0.4)' }}>
+          <div className="absolute inset-0 animate-pulse bg-red-500/10 pointer-events-none border-4 border-red-500/50"></div>
+          <button 
+            onClick={() => setShowGlow(false)}
+            className="pointer-events-auto bg-red-600 text-white px-8 py-3 rounded-full font-bold shadow-[0_0_20px_rgba(239,68,68,0.6)] hover:bg-red-500 transition-all flex items-center gap-2"
+          >
+            <Music2 className="w-5 h-5 animate-bounce" />
+            ¡Nuevas canciones! (Click para enterado)
+          </button>
+        </div>
+      )}
+
       {/* Header Fijo */}
       <header className="sticky top-0 z-30 bg-black/80 backdrop-blur-xl border-b border-red-500/20 px-4 py-4 shadow-[0_4px_20px_rgba(239,68,68,0.05)]">
         <div className="max-w-4xl mx-auto flex items-center justify-between">

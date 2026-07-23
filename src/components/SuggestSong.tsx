@@ -34,6 +34,7 @@ export default function SuggestSong({ tableNumber }: SuggestSongProps) {
     <>
       <div className="fixed bottom-6 w-full px-4 flex justify-center z-20 pointer-events-none">
         <button
+          id="suggest-tour"
           onClick={() => setIsOpen(true)}
           className="pointer-events-auto bg-neutral-900 border border-neutral-700 text-neutral-300 hover:text-white hover:border-red-500 hover:shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-all px-6 py-3 rounded-full text-sm font-medium flex items-center gap-2"
         >
