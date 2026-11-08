@@ -1,4 +1,4 @@
-export const WA_PHONE = "573207533134"; // Reemplazar con el número del local
+export const WA_PHONE = "522722117679"; // Reemplazar con el número del local
 
 export const getTableNumber = (): string | null => {
   if (typeof window === 'undefined') return null;
